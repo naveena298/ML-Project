@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovForecast - ML Demand Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-600 to-purple-600">
+        <div class="w-full max-w-md">
+            <!-- Logo/Header -->
+            <div class="text-center mb-8">
+                <div class="inline-block bg-white rounded-xl p-4 mb-4 shadow-lg">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">GovForecast</h1>
+                <p class="text-blue-100 text-sm">AI-Powered Government Scheme Demand Prediction</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-xl">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h2>
+
+                <div class="mb-6">
+                    <label class="block text-blue-200 text-sm font-semibold mb-2">Username</label>
+                    <input id="username" type="text" placeholder="Enter username" class="login-input">
+                </div>
+
+                <div class="mb-8">
+                    <label class="block text-blue-200 text-sm font-semibold mb-2">Password</label>
+                    <input id="password" type="password" placeholder="Enter password" class="login-input">
+                </div>
+
+                <p id="error" class="text-red-600 text-sm mb-4 hidden flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span id="errorText">Invalid credentials</span>
+                </p>
+
+                <button onclick="login()" class="login-btn w-full">
+                    Sign In
+                </button>
+
+                <div class="mt-6 text-center text-sm text-gray-600">
+                    <p>Demo credentials: admin / 1234</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboard" class="hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-6 shadow-lg">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="w-8 h-8 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 6H6.28l-.31-1.243A1 1 0 005 3H3z"></path>
+                        </svg>
+                        <h1 class="text-3xl font-bold">GovForecast Dashboard</h1>
+                    </div>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- Title Section -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Government Scheme Demand Forecasting</h2>
+                <p class="text-gray-600">Select a scheme and let our AI predict its demand based on social media trends</p>
+            </div>
+
+            <!-- Schemes Grid -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">Available Schemes</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div class="scheme-card" onclick="selectScheme('Ayushman Bharat', this)">
+                        <div class="scheme-icon">🏥</div>
+                        <div class="scheme-name">Ayushman Bharat</div>
+                        <div class="scheme-desc">Health Coverage</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('Agriculture Infrastructure Fund', this)">
+                        <div class="scheme-icon">🌾</div>
+                        <div class="scheme-name">Agri Fund</div>
+                        <div class="scheme-desc">Infrastructure</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('CM Health Insurance Scheme', this)">
+                        <div class="scheme-icon">⚕️</div>
+                        <div class="scheme-name">CM Health</div>
+                        <div class="scheme-desc">Insurance</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('Deen Dayal Yojana', this)">
+                        <div class="scheme-icon">📚</div>
+                        <div class="scheme-name">Deen Dayal</div>
+                        <div class="scheme-desc">Skills</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('Pre-Matric Scholarship', this)">
+                        <div class="scheme-icon">🎓</div>
+                        <div class="scheme-name">Scholarship</div>
+                        <div class="scheme-desc">Education</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('Indira Mahila Scheme', this)">
+                        <div class="scheme-icon">👩</div>
+                        <div class="scheme-name">Indira Mahila</div>
+                        <div class="scheme-desc">Women</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('Shramik Sahayata', this)">
+                        <div class="scheme-icon">💼</div>
+                        <div class="scheme-name">Shramik</div>
+                        <div class="scheme-desc">Labor</div>
+                    </div>
+                    <div class="scheme-card" onclick="selectScheme('Garuda Scheme', this)">
+                        <div class="scheme-icon">🚀</div>
+                        <div class="scheme-name">Garuda</div>
+                        <div class="scheme-desc">Workers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast Buttons -->
+            <div class="flex flex-col md:flex-row justify-center gap-4 mb-8">
+                <button onclick="forecast()" class="forecast-btn inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2 inline" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
+                    </svg>
+                    Predict Demand
+                </button>
+                <button onclick="forecastAll()" class="forecast-btn bg-indigo-500 hover:bg-indigo-600">
+                    <svg class="w-5 h-5 mr-2 inline" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 000 2h12a1 1 0 100-2H3zm0 5a1 1 0 000 2h8a1 1 0 100-2H3zm0 5a1 1 0 000 2h6a1 1 0 100-2H3z"></path>
+                    </svg>
+                    Show All Schemes Demand
+                </button>
+            </div>
+
+            <!-- Demand-as-of display -->
+            <div id="demandAsOf" class="hidden mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                <div class="flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-blue-800 font-medium">Data last updated: 26th April  2026</span>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="result" class="hidden">
+                <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Left Column: Scheme Info -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">
+                                <span id="schemeName"></span>
+                            </h3>
+                            <p id="demandLevel" class="text-sm text-gray-600 mb-6">Select a scheme and predict demand to view the demand level.</p>
+                            <div class="space-y-4">
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                    <p class="text-blue-700 text-sm font-semibold">PREVIOUS DEMAND</p>
+                                    <p class="text-3xl font-bold text-blue-900 mt-2"><span id="prev"></span>%</p>
+                                </div>
+                                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                                    <p class="text-purple-700 text-sm font-semibold">PREDICTED DEMAND</p>
+                                    <p class="text-3xl font-bold text-purple-900 mt-2"><span id="pred"></span>%</p>
+                                </div>
+                                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                                    <p class="text-green-700 text-sm font-semibold">MODEL CONFIDENCE</p>
+                                    <p class="text-3xl font-bold text-green-900 mt-2"><span id="conf"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Recommendation -->
+                        <div>
+                            <div id="recBox" class="rounded-lg p-6 h-full flex flex-col justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold mb-2 opacity-80">RECOMMENDATION</p>
+                                    <h4 id="rec" class="text-2xl font-bold mb-4"></h4>
+                                </div>
+                                <div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+                                        <div id="demandBar" class="bg-gradient-to-r from-red-500 to-green-500 h-3 rounded-full transition-all"></div>
+                                    </div>
+                                    <p class="text-xs opacity-75">Demand Level</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Schemes Results -->
+            <div id="allResults" class="hidden mt-8">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border-2 border-blue-200 shadow-lg">
+                    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-center">
+                            <div class="bg-blue-500 rounded-full p-2 mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl text-gray-800 font-bold">All Scheme Demand Forecast</h3>
+                                <p class="text-gray-600 text-sm mt-1">Demand as of <span id="demandDate"></span></p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-500">Total Schemes</div>
+                            <div class="text-2xl font-bold text-blue-600" id="totalSchemes">10</div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-left text-sm text-gray-800 bg-white rounded-lg overflow-hidden shadow-sm">
+                            <thead class="bg-blue-600 text-white">
+                                <tr class="text-xs uppercase tracking-wider">
+                                    <th class="px-6 py-4 font-semibold">Scheme Name</th>
+                                    <th class="px-6 py-4 font-semibold">Predicted Demand</th>
+                                    <th class="px-6 py-4 font-semibold">Status</th>
+                                    <th class="px-6 py-4 font-semibold">Insight</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allResultsBody" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="hidden text-center">
+                <div class="inline-block">
+                    <div class="spinner"></div>
+                    <p class="text-gray-600 mt-4 text-lg">Analyzing trends...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
